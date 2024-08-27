@@ -31,6 +31,12 @@ import { CoreSites } from '@services/sites';
 import { CoreDom } from '@singletons/dom';
 import { CoreLogger } from '@singletons/logger';
 import { CorePlatform } from '@services/platform';
+import { CoreUser, CoreUserProfile } from '@features/user/services/user';
+import { SafeUrl } from '@angular/platform-browser';
+import { CoreUserHelper } from '@features/user/services/user-helper';
+import { CoreTextUtils } from '@services/utils/text';
+import { CoreDomUtils } from '@services/utils/dom';
+
 
 const ANIMATION_DURATION = 500;
 
@@ -87,11 +93,25 @@ export class CoreMainMenuPage implements OnInit, OnDestroy {
     protected redirectOptions?: CoreNavigationOptions;
     protected logger: CoreLogger;
 
+    //TH edit
+    user?: CoreUserProfile;
+    title?: string;
+    formattedAddress?: string;
+    encodedAddress?: SafeUrl;
+    interests?: string[];
+    theuser: any = {};
+    courseId = 0;
+    protected userId!: number;
+    moreDisplay = true;
+    userLoaded = false;
+
     @ViewChild('mainTabs') mainTabs?: IonTabs;
 
     tabAction: CoreMainMenuRoleTab;
 
     constructor() {
+        this.courseId = CoreNavigator.getRouteNumberParam('courseId') || this.courseId; // Use 0 for site badges.
+        this.userId = CoreNavigator.getRouteNumberParam('userId') || CoreSites.getRequiredCurrentSite().getUserId();
         this.backButtonFunction = (event) => this.backButtonClicked(event);
         this.tabAction = new CoreMainMenuRoleTab(this);
         this.logger = CoreLogger.getInstance('CoreMainMenuPage');
@@ -109,6 +129,9 @@ export class CoreMainMenuPage implements OnInit, OnDestroy {
      * @inheritdoc
      */
     async ngOnInit(): Promise<void> {
+        this.fetchUser().finally(() => {
+            this.userLoaded = true;
+        });
         this.showTabs = true;
         this.urlToOpen = CoreNavigator.getRouteParam('urlToOpen');
         this.redirectPath = CoreNavigator.getRouteParam('redirectPath');
@@ -150,6 +173,39 @@ export class CoreMainMenuPage implements OnInit, OnDestroy {
             });
         }
         CoreEvents.trigger(CoreEvents.MAIN_HOME_LOADED);
+    }
+
+    //TH edit
+    async fetchUser(): Promise<void> {
+        try {
+            const user = await CoreUser.getProfile(this.userId, this.courseId);
+
+            if (user.address) {
+                this.formattedAddress = CoreUserHelper.formatAddress(user.address, user.city, user.country);
+                this.encodedAddress = CoreTextUtils.buildAddressURL(this.formattedAddress);
+            }
+
+            this.interests = user.interests ?
+                user.interests.split(',').map(interest => interest.trim()) :
+                undefined;
+
+            this.user = user;
+            this.title = user.fullname;
+            this.theuser = this.user
+            console.log(this.user)
+            if(this.theuser.email == "appreview@example.com") {
+              this.moreDisplay = false
+            } else {
+              this.moreDisplay = true
+            }
+
+
+            this.user.address = CoreUserHelper.formatAddress('', user.city, user.country);
+
+        } catch (error) {
+            CoreDomUtils.showErrorModalDefault(error, 'core.user.errorloaduser', true);
+            console.error(error);
+        }
     }
 
     /**

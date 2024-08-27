@@ -1452,8 +1452,10 @@ export class CoreSitesProvider {
             site.write('local_th_managelogin_save_userinfo', data, preSets).then((courses) => {
                 console.log(courses)
             }).catch((e) => {
+                console.error(e);
             });
         }).catch((e) => {
+            console.error(e);
         });
     }
 

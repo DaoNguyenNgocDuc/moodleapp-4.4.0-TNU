@@ -259,7 +259,7 @@ export class CoreUrlUtilsProvider {
             }
         }
 
-        docsUrl = "https://aof.aum.edu.vn/";
+        docsUrl = "https://tnu.aum.edu.vn/";
 
         try {
             let lang = await CoreLang.getCurrentLanguage(CoreLangFormat.LMS);

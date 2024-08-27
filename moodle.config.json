@@ -1,6 +1,6 @@
 {
-    "app_id": "vn.edu.aum.aof",
-    "appname": "AOF-e",
+    "app_id": "vn.edu.aum.tnu",
+    "appname": "TNU-e",
     "versioncode": 44004,
     "versionname": "4.4.0",
     "cache_update_frequency_usually": 420000,
@@ -33,7 +33,7 @@
     },
     "customurlscheme": "moodlemobile",
     "sites": [ {
-        "url": "https://aof.aum.edu.vn/"
+        "url": "https://tnu.aum.edu.vn/"
       }],
     "multisitesdisplay": "",
     "sitefindersettings": {},
