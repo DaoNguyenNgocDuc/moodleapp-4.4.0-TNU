@@ -1,8 +1,8 @@
 {
     "app_id": "vn.edu.aum.tnu",
     "appname": "TNU-e",
-    "versioncode": 44004,
-    "versionname": "4.4.0",
+    "versioncode": 44104,
+    "versionname": "4.4.1",
     "cache_update_frequency_usually": 420000,
     "cache_update_frequency_often": 1200000,
     "cache_update_frequency_sometimes": 3600000,
